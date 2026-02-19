@@ -17,6 +17,10 @@ Built with React 19, Tailwind v4, and Vite.
 | **JWT** | Decode a JWT into its header, payload, and signature — with timestamp annotations and expiry status |
 | **Base64** | Auto-detects whether to encode or decode, with a URL-safe mode toggle |
 | **Color** | Hex/RGB/HSL picker with format cards, WCAG contrast ratios, and a recently used colors row |
+| **Regex** | Test regex patterns with live highlighting, flag toggles, and match/group breakdown |
+| **Diff** | Compare two text blocks in unified or side-by-side mode with added/removed counts |
+| **CRON** | Parse 5-field CRON expressions, show readable summaries, and list upcoming run times |
+| **Markdown** | Live Markdown editor + previewer with Deep Ocean styling and HTML copy support |
 
 ---
 
