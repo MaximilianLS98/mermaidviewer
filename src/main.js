@@ -504,6 +504,152 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ============================================================
+// Export
+// ============================================================
+
+const exportBtn  = document.getElementById('export-btn');
+const exportMenu = document.getElementById('export-menu');
+
+exportBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const hasSVG = !!mermaidOutput.querySelector('svg');
+  if (!hasSVG) { flashBtn(exportBtn, 'NO CHART'); return; }
+  exportMenu.classList.toggle('open');
+});
+
+document.addEventListener('click', () => exportMenu.classList.remove('open'));
+
+document.getElementById('export-png').addEventListener('click', () => {
+  exportMenu.classList.remove('open');
+  exportAsPNG();
+});
+
+document.getElementById('export-svg').addEventListener('click', () => {
+  exportMenu.classList.remove('open');
+  exportAsSVG();
+});
+
+/**
+ * Build a padded, self-contained copy of the current Mermaid SVG.
+ * Returns { xmlStr, totalW, totalH } or null if no SVG is rendered.
+ */
+function buildExportSVG(padding = 32) {
+  const svgEl = mermaidOutput.querySelector('svg');
+  if (!svgEl) return null;
+
+  const clone = svgEl.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
+  // Determine the natural (unscaled) content dimensions
+  let nW, nH;
+  const vb = svgEl.viewBox?.baseVal;
+  if (vb && vb.width > 0 && vb.height > 0) {
+    nW = vb.width;
+    nH = vb.height;
+  } else {
+    nW = parseFloat(svgEl.getAttribute('width'))  || svgEl.getBoundingClientRect().width  / tf.scale;
+    nH = parseFloat(svgEl.getAttribute('height')) || svgEl.getBoundingClientRect().height / tf.scale;
+  }
+
+  const totalW = nW + padding * 2;
+  const totalH = nH + padding * 2;
+
+  // Expand the viewBox to add padding around the original content coordinates
+  clone.setAttribute('width',   totalW);
+  clone.setAttribute('height',  totalH);
+  clone.setAttribute('viewBox', `${-padding} ${-padding} ${totalW} ${totalH}`);
+
+  // Background rect aligned to the expanded viewBox
+  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  bg.setAttribute('x',      -padding);
+  bg.setAttribute('y',      -padding);
+  bg.setAttribute('width',  totalW);
+  bg.setAttribute('height', totalH);
+  bg.setAttribute('fill',   '#060c14');
+  clone.insertBefore(bg, clone.firstChild);
+
+  const xmlStr = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    new XMLSerializer().serializeToString(clone);
+
+  return { xmlStr, totalW, totalH };
+}
+
+function safeFilename() {
+  return (currentName || 'chart').replace(/[^\w\s\-]/g, '').trim() || 'chart';
+}
+
+function exportAsSVG() {
+  const result = buildExportSVG(32);
+  if (!result) return;
+  const blob = new Blob([result.xmlStr], { type: 'image/svg+xml;charset=utf-8' });
+  triggerDownload(URL.createObjectURL(blob), safeFilename() + '.svg');
+}
+
+async function exportAsPNG(pixelRatio = 3) {
+  const result = buildExportSVG(32);
+  if (!result) return;
+
+  const { xmlStr, totalW, totalH } = result;
+  const blob    = new Blob([xmlStr], { type: 'image/svg+xml;charset=utf-8' });
+  const svgUrl  = URL.createObjectURL(blob);
+
+  exportBtn.textContent = 'RENDERING…';
+  exportBtn.disabled = true;
+
+  try {
+    await new Promise((resolve, reject) => {
+      const img = new Image();
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width  = Math.round(totalW * pixelRatio);
+        canvas.height = Math.round(totalH * pixelRatio);
+
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled  = true;
+        ctx.imageSmoothingQuality  = 'high';
+        // Explicit background fill (belt-and-suspenders for transparent SVGs)
+        ctx.fillStyle = '#060c14';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((pngBlob) => {
+          triggerDownload(URL.createObjectURL(pngBlob), safeFilename() + '.png');
+          setTimeout(() => URL.revokeObjectURL(svgUrl), 200);
+          resolve();
+        }, 'image/png');
+      };
+
+      img.onerror = () => { URL.revokeObjectURL(svgUrl); reject(new Error('render failed')); };
+      img.src = svgUrl;
+    });
+
+    flashBtn(exportBtn, 'SAVED ✓', 'EXPORT ▾');
+  } catch (err) {
+    flashBtn(exportBtn, 'ERROR', 'EXPORT ▾');
+    console.error('PNG export failed:', err);
+  } finally {
+    exportBtn.disabled = false;
+    exportBtn.textContent = 'EXPORT ▾';
+  }
+}
+
+function triggerDownload(url, filename) {
+  const a = document.createElement('a');
+  a.href     = url;
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 300);
+}
+
+function flashBtn(btn, tempLabel, restoreLabel) {
+  const orig = restoreLabel || btn.textContent;
+  btn.textContent = tempLabel;
+  setTimeout(() => { btn.textContent = orig; }, 1500);
+}
+
+// ============================================================
 // Utilities
 // ============================================================
 
