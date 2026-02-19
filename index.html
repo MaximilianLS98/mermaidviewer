@@ -3,150 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MermaidViewer</title>
+    <title>DevTools</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="app">
-
-      <!-- Sidebar -->
-      <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <span class="sidebar-title">SAVED CHARTS</span>
-          <span class="saved-count" id="saved-count">0</span>
-        </div>
-        <div class="sidebar-list" id="saved-list">
-          <div class="saved-empty">No saved charts yet.<br />Hit <strong>SAVE</strong> to start.</div>
-        </div>
-        <button class="sidebar-new-btn" id="sidebar-new-btn">＋ New Chart</button>
-      </aside>
-
-      <!-- Main -->
-      <div class="main" id="main">
-
-        <!-- Topbar -->
-        <header class="topbar">
-          <div class="topbar-left">
-            <button class="sidebar-toggle" id="sidebar-toggle" title="Toggle sidebar">
-              <span></span><span></span><span></span>
-            </button>
-            <div class="logo">
-              <span class="logo-hex">⬡</span>
-              <span class="logo-text">MERMAID<span class="logo-accent">VIEWER</span></span>
-            </div>
-          </div>
-
-          <div class="chart-name-area">
-            <span class="chart-name-label">CHART</span>
-            <span class="chart-name-sep">▸</span>
-            <span class="chart-name" id="chart-name-display">Untitled</span>
-            <span class="modified-dot" id="modified-dot" title="Unsaved changes"></span>
-          </div>
-
-          <div class="topbar-actions">
-            <span class="shortcut-hint">⌘S save &nbsp;·&nbsp; ⌘0 fit</span>
-            <button class="btn btn-ghost" id="new-btn">NEW</button>
-            <button class="btn btn-primary" id="save-btn">SAVE</button>
-            <div class="export-wrap" id="export-wrap">
-              <button class="btn btn-ghost export-toggle" id="export-btn">EXPORT ▾</button>
-              <div class="export-menu" id="export-menu">
-                <button class="export-item" id="export-png">
-                  <span class="export-item-ext">PNG</span>
-                  <span class="export-item-desc">Raster · 3× hi-res</span>
-                </button>
-                <button class="export-item" id="export-svg">
-                  <span class="export-item-ext">SVG</span>
-                  <span class="export-item-desc">Vector · lossless</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <!-- Workspace -->
-        <div class="workspace">
-
-          <!-- Editor Panel -->
-          <div class="panel editor-panel" id="editor-panel">
-            <div class="panel-header">
-              <span class="panel-title">CHART CODE</span>
-              <span class="panel-hint">mermaid syntax</span>
-            </div>
-            <textarea
-              id="editor"
-              class="code-editor"
-              spellcheck="false"
-              autocorrect="off"
-              autocapitalize="off"
-              placeholder="Paste your Mermaid chart code here...
-
-Example:
-flowchart LR
-    A --> B --> C"
-            ></textarea>
-            <div class="error-bar" id="error-bar">
-              <span class="error-icon">⚠</span>
-              <span id="error-text">Syntax error</span>
-            </div>
-          </div>
-
-          <!-- Resize Divider -->
-          <div class="divider" id="divider"></div>
-
-          <!-- Preview Panel -->
-          <div class="panel preview-panel">
-            <div class="panel-header">
-              <span class="panel-title">PREVIEW</span>
-              <div class="zoom-controls">
-                <button class="zoom-btn" id="zoom-out" title="Zoom out (Ctrl+−)">−</button>
-                <span class="zoom-display" id="zoom-level">100%</span>
-                <button class="zoom-btn" id="zoom-in" title="Zoom in (Ctrl+=)">＋</button>
-                <div class="zoom-sep"></div>
-                <button class="zoom-btn zoom-fit-btn" id="zoom-fit" title="Fit to view (Ctrl+0)">FIT</button>
-                <button class="zoom-btn" id="zoom-reset" title="Reset to 100%">1:1</button>
-              </div>
-            </div>
-            <div class="preview-container" id="preview-container">
-              <div class="preview-inner" id="preview-inner">
-                <div id="mermaid-output"></div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Save Modal -->
-    <div class="modal-overlay" id="save-modal">
-      <div class="modal">
-        <div class="modal-header">
-          <span class="modal-hex">⬡</span>
-          SAVE CHART
-        </div>
-        <div class="modal-body">
-          <label class="modal-label" for="chart-name-input">CHART NAME</label>
-          <input
-            type="text"
-            id="chart-name-input"
-            class="modal-input"
-            placeholder="Enter a name..."
-            maxlength="80"
-          />
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" id="cancel-save">CANCEL</button>
-          <button class="btn btn-primary" id="confirm-save">SAVE CHART</button>
-        </div>
-      </div>
-    </div>
-
-    <script type="module" src="/src/main.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
