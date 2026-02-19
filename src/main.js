@@ -576,7 +576,12 @@ function buildExportSVG(padding = 32) {
 }
 
 function safeFilename() {
-  return (currentName || 'chart').replace(/[^\w\s\-]/g, '').trim() || 'chart';
+  return (currentName || 'chart')
+    .trim()
+    .replace(/[^\w\s\-]/g, '')   // strip special chars
+    .replace(/\s+/g, '_')        // spaces → underscores
+    .replace(/_{2,}/g, '_')      // collapse runs of underscores
+    || 'chart';
 }
 
 function exportAsSVG() {
@@ -590,9 +595,16 @@ async function exportAsPNG(pixelRatio = 3) {
   const result = buildExportSVG(32);
   if (!result) return;
 
-  const { xmlStr, totalW, totalH } = result;
-  const blob    = new Blob([xmlStr], { type: 'image/svg+xml;charset=utf-8' });
-  const svgUrl  = URL.createObjectURL(blob);
+  let { xmlStr, totalW, totalH } = result;
+
+  // Strip any @import / external url() rules that would taint the canvas.
+  // Browsers mark a canvas as tainted (blocking toBlob) when the SVG loaded
+  // via img.src tries to fetch cross-origin resources such as Google Fonts.
+  xmlStr = xmlStr.replace(/@import\s+url\([^)]*\)\s*;?/g, '');
+
+  // Use a data: URL instead of a blob: URL — browsers treat data: as
+  // same-origin so the canvas never gets tainted.
+  const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xmlStr);
 
   exportBtn.textContent = 'RENDERING…';
   exportBtn.disabled = true;
@@ -607,22 +619,20 @@ async function exportAsPNG(pixelRatio = 3) {
         canvas.height = Math.round(totalH * pixelRatio);
 
         const ctx = canvas.getContext('2d');
-        ctx.imageSmoothingEnabled  = true;
-        ctx.imageSmoothingQuality  = 'high';
-        // Explicit background fill (belt-and-suspenders for transparent SVGs)
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
         ctx.fillStyle = '#060c14';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
         canvas.toBlob((pngBlob) => {
           triggerDownload(URL.createObjectURL(pngBlob), safeFilename() + '.png');
-          setTimeout(() => URL.revokeObjectURL(svgUrl), 200);
           resolve();
         }, 'image/png');
       };
 
-      img.onerror = () => { URL.revokeObjectURL(svgUrl); reject(new Error('render failed')); };
-      img.src = svgUrl;
+      img.onerror = () => reject(new Error('SVG render failed'));
+      img.src = svgDataUrl;
     });
 
     flashBtn(exportBtn, 'SAVED ✓', 'EXPORT ▾');
