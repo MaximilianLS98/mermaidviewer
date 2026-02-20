@@ -66,8 +66,8 @@ function addRecent(hex, prev) {
 }
 
 export default function ColorTool() {
-  const [hex, setHex] = useState('#00d4ff');
-  const [inputVal, setInputVal] = useState('#00d4ff');
+  const [hex, setHex] = useState('');
+  const [inputVal, setInputVal] = useState('');
   const [recent, setRecent] = useState(loadRecent);
 
   function applyHex(h) {
@@ -124,11 +124,11 @@ export default function ColorTool() {
         <label style={{ position: 'relative', cursor: 'pointer', flexShrink: 0 }}>
           <input
             type="color"
-            value={hex}
+            value={hex || '#000000'}
             onChange={handlePickerChange}
             style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%', height: '100%' }}
           />
-          <div style={{ width: 40, height: 40, borderRadius: 6, background: hex, border: '2px solid var(--color-wire)', boxShadow: `0 2px 12px ${hex}55` }} />
+          <div style={{ width: 40, height: 40, borderRadius: 6, background: hex || 'var(--color-elevated)', border: '2px solid var(--color-wire)', boxShadow: hex ? `0 2px 12px ${hex}55` : 'none' }} />
         </label>
 
         {/* Text input */}
@@ -136,7 +136,7 @@ export default function ColorTool() {
           type="text"
           value={inputVal}
           onChange={handleTextChange}
-          placeholder="#000000"
+          placeholder="#rrggbb"
           maxLength={7}
           style={{
             background: 'var(--color-elevated)', border: '1px solid var(--color-wire)', borderRadius: 4,
@@ -147,13 +147,22 @@ export default function ColorTool() {
           onBlur={e => { e.target.style.borderColor = 'var(--color-wire)'; }}
         />
 
-        <span style={{ fontSize: 12, color: 'var(--color-muted)' }}>Click swatch to open color picker</span>
+        <button
+          onClick={() => applyHex('#00d4ff')}
+          style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', padding: '6px 12px', borderRadius: 3, cursor: 'pointer', border: '1px solid var(--color-wire)', background: 'transparent', color: 'var(--color-dim)' }}
+        >
+          EXAMPLE
+        </button>
+
+        {!hex && <span style={{ fontSize: 12, color: 'var(--color-muted)' }}>Type a hex color or click the swatch</span>}
       </div>
 
       {/* Large swatch */}
-      <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'center', padding: '20px 0 10px', borderBottom: '1px solid var(--color-rule)' }}>
-        <div style={{ width: 200, height: 100, borderRadius: 10, background: hex, boxShadow: `0 8px 32px ${hex}66, 0 2px 8px rgba(0,0,0,0.4)` }} />
-      </div>
+      {hex && (
+        <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'center', padding: '20px 0 10px', borderBottom: '1px solid var(--color-rule)' }}>
+          <div style={{ width: 200, height: 100, borderRadius: 10, background: hex, boxShadow: `0 8px 32px ${hex}66, 0 2px 8px rgba(0,0,0,0.4)` }} />
+        </div>
+      )}
 
       {/* Format cards */}
       <div style={{ flexShrink: 0, padding: 16, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 8 }}>

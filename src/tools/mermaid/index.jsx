@@ -56,7 +56,7 @@ function buildExportSVG(svgEl, currentScale, padding = 32) {
 }
 
 export default function MermaidTool() {
-  const [code, setCode] = useState(DEFAULT_CHART);
+  const [code, setCode] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentId, setCurrentId] = useState(null);
   const [currentName, setCurrentName] = useState('Untitled');
@@ -518,7 +518,14 @@ export default function MermaidTool() {
               borderRight: '1px solid var(--color-rule)',
             }}
           >
-            <PanelHead title="CHART CODE" hint="mermaid syntax" />
+            <PanelHead title="CHART CODE" hint="mermaid syntax">
+              <button
+                onClick={() => setCode(DEFAULT_CHART)}
+                style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', padding: '3px 9px', borderRadius: 3, cursor: 'pointer', border: '1px solid var(--color-wire)', background: 'transparent', color: 'var(--color-dim)' }}
+              >
+                EXAMPLE
+              </button>
+            </PanelHead>
             <textarea
               ref={editorRef}
               value={code}

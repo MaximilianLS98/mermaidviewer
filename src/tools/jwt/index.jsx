@@ -91,12 +91,20 @@ export default function JwtTool() {
       <div style={{ flexShrink: 0, borderBottom: '1px solid var(--color-rule)', background: 'var(--color-surface)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', height: 38, borderBottom: '1px solid var(--color-rule)' }}>
           <span style={S.label}>JWT INPUT</span>
-          {trimmed && !parseError && (
-            <span style={{ fontSize: 11, color: 'var(--color-ok)', fontFamily: 'var(--font-mono)' }}>✓ Decoded</span>
-          )}
-          {parseError && (
-            <span style={{ fontSize: 11, color: 'var(--color-danger)', fontFamily: 'var(--font-mono)' }}>⚠ {parseError}</span>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {trimmed && !parseError && (
+              <span style={{ fontSize: 11, color: 'var(--color-ok)', fontFamily: 'var(--font-mono)' }}>✓ Decoded</span>
+            )}
+            {parseError && (
+              <span style={{ fontSize: 11, color: 'var(--color-danger)', fontFamily: 'var(--font-mono)' }}>⚠ {parseError}</span>
+            )}
+            <button
+              onClick={() => setInput('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjIwMDAwMDAwMDB9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c')}
+              style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', padding: '3px 9px', borderRadius: 3, cursor: 'pointer', border: '1px solid var(--color-wire)', background: 'transparent', color: 'var(--color-dim)' }}
+            >
+              EXAMPLE
+            </button>
+          </div>
         </div>
         <textarea
           value={input}

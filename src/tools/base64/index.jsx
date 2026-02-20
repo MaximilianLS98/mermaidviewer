@@ -85,6 +85,12 @@ export default function Base64Tool() {
         <div style={S.panelHead}>
           <span style={S.label}>INPUT</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button
+              onClick={() => setInput('Hello, World! This is a Base64 example.')}
+              style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', padding: '3px 9px', borderRadius: 3, cursor: 'pointer', border: '1px solid var(--color-wire)', background: 'transparent', color: 'var(--color-dim)' }}
+            >
+              EXAMPLE
+            </button>
             <label style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', fontSize: 10, color: 'var(--color-dim)', fontFamily: 'var(--font-mono)' }}>
               <input
                 type="checkbox"

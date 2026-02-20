@@ -79,12 +79,13 @@ function highlightMatches(text, matches) {
   return chunks.join('');
 }
 
+const EXAMPLE_PATTERN = '\\b\\w+@\\w+\\.\\w+\\b';
+const EXAMPLE_INPUT = 'Contact us at team@example.com.\nAlso notify ops@example.org when deploys fail.';
+
 export default function RegexTool() {
-  const [pattern, setPattern] = useState('\\b\\w+@\\w+\\.\\w+\\b');
-  const [flags, setFlags] = useState('gm');
-  const [input, setInput] = useState(
-    'Contact us at team@example.com.\nAlso notify ops@example.org when deploys fail.'
-  );
+  const [pattern, setPattern] = useState('');
+  const [flags, setFlags] = useState('g');
+  const [input, setInput] = useState('');
 
   const { matches, error } = useMemo(
     () => collectMatches(pattern, flags, input),
@@ -149,9 +150,19 @@ export default function RegexTool() {
       <div style={{ flex: '0 0 50%', display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--color-rule)' }}>
         <div style={S.panelHead}>
           <span style={S.label}>Pattern + Input</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: error ? 'var(--color-danger)' : 'var(--color-muted)' }}>
-            {error || `${matches.length} matches`}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {(error || pattern) && (
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: error ? 'var(--color-danger)' : 'var(--color-muted)' }}>
+                {error || `${matches.length} matches`}
+              </span>
+            )}
+            <button
+              onClick={() => { setPattern(EXAMPLE_PATTERN); setInput(EXAMPLE_INPUT); setFlags('gm'); }}
+              style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', padding: '3px 9px', borderRadius: 3, cursor: 'pointer', border: '1px solid var(--color-wire)', background: 'transparent', color: 'var(--color-dim)' }}
+            >
+              EXAMPLE
+            </button>
+          </div>
         </div>
         <div style={{ borderBottom: '1px solid var(--color-rule)', padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 10, background: 'var(--color-surface)' }}>
           <input

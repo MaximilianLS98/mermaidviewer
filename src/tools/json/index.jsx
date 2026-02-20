@@ -87,6 +87,7 @@ export default function JsonTool() {
         <div style={S.panelHead}>
           <span style={S.label}>INPUT</span>
           <div style={{ display: 'flex', gap: 6 }}>
+            <SmallBtn onClick={() => setInput('{"name":"Alice","age":31,"roles":["admin","user"],"active":true,"address":{"city":"Berlin","zip":"10115"}}')}>EXAMPLE</SmallBtn>
             <SmallBtn onClick={() => processJson(input, 2)}>FORMAT</SmallBtn>
             <SmallBtn onClick={minify}>MINIFY</SmallBtn>
             <SmallBtn onClick={() => { setInput(''); setFormatted(''); setError(null); setStats(null); }}>CLEAR</SmallBtn>

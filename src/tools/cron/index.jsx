@@ -208,12 +208,10 @@ function formatRun(date, useUtc) {
 }
 
 export default function CronTool() {
-  const [expression, setExpression] = useState('*/15 9-17 * * 1-5');
+  const [expression, setExpression] = useState('');
   const [useUtc, setUseUtc] = useState(true);
   const [count, setCount] = useState(10);
-  const [selectedPreset, setSelectedPreset] = useState(
-    matchingPresetId('*/15 9-17 * * 1-5')
-  );
+  const [selectedPreset, setSelectedPreset] = useState('custom');
 
   const { cron, error, upcoming, description } = useMemo(() => {
     try {
@@ -268,9 +266,19 @@ export default function CronTool() {
       <div style={{ flex: '0 0 50%', display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--color-rule)' }}>
         <div style={S.panelHead}>
           <span style={S.label}>Expression</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: error ? 'var(--color-danger)' : 'var(--color-ok)' }}>
-            {error ? `⚠ ${error}` : 'Valid CRON'}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {expression && (
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: error ? 'var(--color-danger)' : 'var(--color-ok)' }}>
+                {error ? `⚠ ${error}` : 'Valid CRON'}
+              </span>
+            )}
+            <button
+              onClick={() => { setExpression('*/15 9-17 * * 1-5'); setSelectedPreset(matchingPresetId('*/15 9-17 * * 1-5')); }}
+              style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', padding: '3px 9px', borderRadius: 3, cursor: 'pointer', border: '1px solid var(--color-wire)', background: 'transparent', color: 'var(--color-dim)' }}
+            >
+              EXAMPLE
+            </button>
+          </div>
         </div>
         <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: 10, borderBottom: '1px solid var(--color-rule)' }}>
           <input

@@ -76,13 +76,12 @@ function rowStyle(type) {
   return { background: 'transparent', color: 'var(--color-dim)' };
 }
 
+const EXAMPLE_LEFT  = 'host=api.internal\nretries=2\ntimeout=5000\nfeatureFlag=true';
+const EXAMPLE_RIGHT = 'host=api.internal\nretries=3\ntimeout=8000\nfeatureFlag=true\nlogLevel=debug';
+
 export default function DiffTool() {
-  const [leftText, setLeftText] = useState(
-    'host=api.internal\nretries=2\ntimeout=5000\nfeatureFlag=true'
-  );
-  const [rightText, setRightText] = useState(
-    'host=api.internal\nretries=3\ntimeout=8000\nfeatureFlag=true\nlogLevel=debug'
-  );
+  const [leftText, setLeftText] = useState('');
+  const [rightText, setRightText] = useState('');
   const [viewMode, setViewMode] = useState('side');
 
   const { rows, stats } = useMemo(
@@ -132,9 +131,17 @@ export default function DiffTool() {
       <div style={{ flex: '0 0 46%', display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--color-rule)' }}>
         <div style={S.panelHead}>
           <span style={S.label}>Left Input (Old)</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-dim)' }}>
-            {splitLines(leftText).length} lines
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              onClick={() => { setLeftText(EXAMPLE_LEFT); setRightText(EXAMPLE_RIGHT); }}
+              style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', padding: '3px 9px', borderRadius: 3, cursor: 'pointer', border: '1px solid var(--color-wire)', background: 'transparent', color: 'var(--color-dim)' }}
+            >
+              EXAMPLE
+            </button>
+            {leftText && <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-dim)' }}>
+              {splitLines(leftText).length} lines
+            </span>}
+          </div>
         </div>
         <textarea value={leftText} onChange={(event) => setLeftText(event.target.value)} spellCheck={false} style={S.textArea} />
         <div style={{ ...S.panelHead, borderTop: '1px solid var(--color-rule)', borderBottom: 'none' }}>

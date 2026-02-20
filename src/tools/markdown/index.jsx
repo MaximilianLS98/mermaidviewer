@@ -148,8 +148,7 @@ function parseMarkdown(markdown) {
   return html.join('');
 }
 
-export default function MarkdownTool() {
-  const [input, setInput] = useState(`# Markdown Preview
+const EXAMPLE_MD = `# Markdown Preview
 
 Write docs in the left editor and preview instantly.
 
@@ -165,7 +164,10 @@ Write docs in the left editor and preview instantly.
 const greeting = "hello world";
 console.log(greeting);
 \`\`\`
-`);
+`;
+
+export default function MarkdownTool() {
+  const [input, setInput] = useState('');
 
   const html = useMemo(() => parseMarkdown(input), [input]);
 
@@ -210,9 +212,17 @@ console.log(greeting);
       <div style={{ flex: '0 0 50%', display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--color-rule)' }}>
         <div style={S.panelHead}>
           <span style={S.label}>Markdown Input</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-dim)' }}>
-            {input.length} chars
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              onClick={() => setInput(EXAMPLE_MD)}
+              style={{ fontFamily: 'var(--font-display)', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', padding: '3px 9px', borderRadius: 3, cursor: 'pointer', border: '1px solid var(--color-wire)', background: 'transparent', color: 'var(--color-dim)' }}
+            >
+              EXAMPLE
+            </button>
+            {input && <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--color-dim)' }}>
+              {input.length} chars
+            </span>}
+          </div>
         </div>
         <textarea
           value={input}
